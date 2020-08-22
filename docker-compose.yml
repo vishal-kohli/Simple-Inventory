@@ -10,3 +10,13 @@ services:
     volumes:
       - /app/node_modules
       - ./front-end:/app
+
+  redis:
+    image: "redis:6"
+
+  AddDeleteServer:
+    depends_on:
+      - redis
+    build:
+      context: ./AddDeleteServer
+      dockerfile: Dockerfile.dev

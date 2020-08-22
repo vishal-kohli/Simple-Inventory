@@ -18,7 +18,7 @@ function MainPage() {
     ];
 
     const retrieveResults = () => {
-        alert("here");
+        // call api to get results
     }
 
     const AddItem = (e) => {

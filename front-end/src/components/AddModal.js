@@ -8,6 +8,9 @@ const AddModal = (props) => {
         props.setShowModal(false);
     }
     const saveChanged = () => {
+        let itemName = document.getElementById("itemNameField").value;
+        let itemQuantity = document.getElementById("itemQuantityField").value;
+
         handleClose();
 
     }
