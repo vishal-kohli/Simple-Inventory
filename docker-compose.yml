@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   frontend:
+    restart: always
     stdin_open: true
     build:
       context: ./front-end
@@ -12,11 +13,21 @@ services:
       - ./front-end:/app
 
   redis:
-    image: "redis:6"
+    restart: always
+    image: "redis:alpine"
 
-  AddDeleteServer:
+  postgres:
+    restart: always
+    image: "postgres:alpine"
+
+  add_delete_server:
+    restart: always
     depends_on:
       - redis
+      - postgres
     build:
       context: ./AddDeleteServer
       dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./server:/app

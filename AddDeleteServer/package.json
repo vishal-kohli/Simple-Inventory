@@ -1,7 +1,11 @@
 {
-    "name": "add-delete-server",
-    "version": "0.1.0",
     "dependencies": {
-        "express": "4.17.1"
+        "express": "4.17.1",
+        "redis": "2.8.0",
+        "nodemon": "1.18.3"
+    },
+    "scripts": {
+        "dev": "nodemon",
+        "start": "node app.js"
     }
 }
