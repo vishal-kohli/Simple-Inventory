@@ -1,33 +1,39 @@
 version: "3.8"
 services:
-  frontend:
-    restart: always
-    stdin_open: true
-    build:
-      context: ./front-end
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - /app/node_modules
-      - ./front-end:/app
-
-  redis:
-    restart: always
-    image: "redis:alpine"
-
-  postgres:
-    restart: always
-    image: "postgres:alpine"
-
+  #   # ---------------
+  # frontend_client:
+  # container_name: frontend_client
+  #   stdin_open: true
+  #   build:
+  #     context: ./front-end
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./front-end:/app
+  # ---------------
   add_delete_server:
-    restart: always
+    container_name: add_delete_server
     depends_on:
-      - redis
-      - postgres
+      - redis_db
+      - mysql_db
     build:
       context: ./AddDeleteServer
       dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
     volumes:
       - /app/node_modules
-      - ./server:/app
+      - ./AddDeleteServer:/app
+  # ---------------
+  redis_db:
+    container_name: redis_db
+    image: "redis:alpine"
+  # ---------------
+  mysql_db:
+    container_name: mysql_db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password

@@ -1,11 +1,10 @@
 FROM node:alpine
 
 #setting work directory
-WORKDIR "/app"
+WORKDIR /app    
 
 #copying only package.json first, so cache can be used for minor changes
-COPY package.json .
-COPY package-lock.json .
+COPY package*.json ./
 RUN npm install
 
 # copy rest of files

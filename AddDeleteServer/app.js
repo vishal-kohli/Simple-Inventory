@@ -3,7 +3,9 @@ const app = express();
 const port = 3001;
 const bodyParser = require('body-parser');
 const redis = require('redis')
-const redis_client = redis.createClient()
+const redis_client = redis.createClient({
+    host: 'redis_db'
+})
 const mysql = require('mysql');
 
 app.use(bodyParser.json());
@@ -12,7 +14,7 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     user: 'root',
     password: 'password',
-    host: 'localhost',
+    host: 'mysql_db',
     port: '3306',
     database: 'inventory_db'
 });
@@ -118,7 +120,6 @@ app.post('/get', (req, res) => {
         //     response[1] = data;
         //     res.send(response);
         // })
-
     });
 });
 
