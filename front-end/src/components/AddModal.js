@@ -4,15 +4,20 @@ import { Button, Form, Modal } from "react-bootstrap";
 const AddModal = (props) => {
 
     const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
-    const handleClose = () => {
+    const closeModal = () => {
+        props.setModalError(null);
         props.setShowModal(false);
+
     }
-    const saveChanged = () => {
+    const addItem = () => {
         let itemName = document.getElementById("itemNameField").value;
         let itemQuantity = document.getElementById("itemQuantityField").value;
 
-        handleClose();
-
+        props.addItemsToInventory({
+            itemName: itemName,
+            itemQuantity: itemQuantity
+        })
+        // closeModal();
     }
 
     const validateQuantity = (e) => {
@@ -56,14 +61,17 @@ const AddModal = (props) => {
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                {props.modalError &&
+                    < p style={{ color: "red" }} >{props.modalError}</p>
+                }
+                <Button variant="secondary" onClick={closeModal}>
                     Cancel
                   </Button>
-                <Button variant="primary" onClick={saveChanged} disabled={saveButtonDisabled}>
-                    Save Changes
+                <Button variant="primary" onClick={addItem} disabled={saveButtonDisabled}>
+                    Add Item
                   </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 }
 
