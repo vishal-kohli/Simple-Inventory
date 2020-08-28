@@ -43,7 +43,7 @@ const AddModal = (props) => {
 
     return (
         <Modal show={props.showModal} animation={false}
-            onHide={() => props.setShowModal(false)}
+            onHide={() => closeModal()}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Register Item</Modal.Title>

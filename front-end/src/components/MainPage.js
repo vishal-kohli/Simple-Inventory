@@ -10,50 +10,62 @@ function MainPage() {
     const [checkBoxDisabled, setCheckBoxDisabled] = useState(false);
     const [items, setItems] = useState(null);
 
+    const getData = () => {
+        fetch('http://localhost:3002/api/getInventory')
+            // fetch('get_inventory_server:3002')
+            .then(response => {
+                return response.json()
+            }).then(res => {
+
+                if (res.error != null) {
+                    console.log(res.error);
+                }
+                else {
+                    console.log(res.data);
+                    setItems(res.data);
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+    }
 
     useEffect(() => {
-        fetch('http://localhost:3001/api/getInventory'
-        ).then(response => {
-            return response.json()
-        }).then(res => {
-
-            if (res.error != null) {
-                console.log(res.error);
-            }
-            else {
-                console.log(res.data);
-                setItems(res.data);
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
+        getData();
 
     }, []);
 
     const addItemsToInventory = (data) => {
-        // call api to get results
+
         data = JSON.stringify(data);
-        fetch('http://localhost:3001/api/add', {
-            method: 'post',
-            body: data,
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-        }).then(response => {
-            return response.json()
-        }).then(res => {
+        fetch('http://localhost:3001/api/add'
+            // fetch('add_delete_server'
+            , {
+                method: 'post',
+                body: data,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => {
+                return response.json()
+            }).then(res => {
+                // if (res.error.code != null && res.error.code.toString() === 'ER_DUP_ENTRY') {
+                //     setModalError("Item already exists");
+                // }
+                if (res.error != null) {
+                    setModalError("Something went wrong. Try again.");
+                    getData();
+                }
+                else {
+                    setModalError(null);
+                    setShowModal(false);
+                    getData();
+                }
 
-            if (res.error != null) {
+            }).catch((error) => {
                 setModalError("Something went wrong. Try again.");
-            }
-            else {
-                setShowModal(false);
-            }
-
-        }).catch((error) => {
-            setModalError("Something went wrong. Try again.");
-        });
+                getData();
+            });
     }
 
     const deleteItemsFromInventory = (data) => {
@@ -72,13 +84,16 @@ function MainPage() {
 
             if (res.error != null) {
                 setModalError("Something went wrong. Try again.");
+                getData();
             }
             else {
                 setShowModal(false);
+                getData();
             }
 
         }).catch((error) => {
             setModalError("Something went wrong. Try again.");
+            getData();
         });
     }
 
@@ -119,8 +134,8 @@ function MainPage() {
                     items.map(function (item, i = 0) {
                         return <tr>
                             <td><input type="checkbox" disabled={checkBoxDisabled} value={i++} /></td>
-                            <td>{item.NAME}</td>
-                            <td>{item.QUANTITY}</td>
+                            <td>{item.name}</td>
+                            <td>{item.quantity}</td>
                         </tr>
                     })
 

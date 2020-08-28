@@ -1,17 +1,19 @@
 version: "3.8"
+
 services:
-  #   # ---------------
-  # frontend_client:
-  # container_name: frontend_client
-  #   stdin_open: true
-  #   build:
-  #     context: ./front-end
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./front-end:/app
+  # ---------------
+  frontend_client:
+    container_name: frontend_client
+    stdin_open: true
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - ./front-end:/app
+
   # ---------------
   add_delete_server:
     container_name: add_delete_server
@@ -26,6 +28,21 @@ services:
     volumes:
       - /app/node_modules
       - ./AddDeleteServer:/app
+
+  # #-----------------
+  get_inventory_server:
+    container_name: get_inventory_server
+    depends_on:
+      - redis_db
+      - mysql_db
+    build:
+      context: ./AddDeleteServer
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3002"
+    volumes:
+      - /app/node_modules
+      - ./GetInventoryServer:/app
   # ---------------
   redis_db:
     container_name: redis_db
@@ -37,3 +54,4 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: inventory_db

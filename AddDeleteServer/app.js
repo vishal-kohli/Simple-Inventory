@@ -3,21 +3,21 @@ const app = express();
 const port = 3001;
 const bodyParser = require('body-parser');
 const redis = require('redis')
-const redis_client = redis.createClient(
-    // {host: 'redis_db'}
-)
+const redis_client = redis.createClient({
+    host: 'redis_db'
+})
 const mysql = require('mysql');
 const cors = require('cors');
 
-app.use(cors())
+app.use(cors());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
     connectionLimit: 10,
     user: 'root',
     password: 'password',
-    // host: 'mysql_db',
-    host: 'localhost',
+    host: 'mysql_db',
+    // host: 'localhost',
     port: '3306',
     database: 'inventory_db'
 });
@@ -39,49 +39,52 @@ app.post('/api/delete', (req, res) => {
         "error": null
     };
 
+    let errorDuringExecution = false;
+
     for (let i = 0; i < toBeDeleted.length; i++) {
 
-        redis_client.EXISTS(toBeDeleted[i].NAME, function (err, result) {
+        if (errorDuringExecution) {
+            break;
+        }
+        redis_client.EXISTS(toBeDeleted[i].name, function (err, result) {
 
             // if exists - delete from redis and mysql
             if (result > 0) {
-                redis_client.del(toBeDeleted[i].NAME, function (err, result) {
+                console.log("result is : " + result);
+                redis_client.del(toBeDeleted[i].name, function (err, result) {
                     if (err) {
                         console.log(err)
                         response.error = err;
                         res.send(response);
+                        errorDuringExecution = true;
                     }
                     else {
-                        console.log("here" + toBeDeleted[i].NAME);
-                        pool.query(`DELETE FROM products WHERE name ="${toBeDeleted[i].NAME}"`, function (err, result) {
+                        console.log("Product name : " + toBeDeleted[i].name);
+                        pool.query(`DELETE FROM products WHERE name ="${toBeDeleted[i].name}"`, function (err, result) {
                             if (err) {
                                 console.log(err)
                                 response.error = err;
                                 res.send(response);
+                                errorDuringExecution = true;
                             }
                             else {
-                                console.log(result);
-                                response.operation_successful = true;
-                                res.send(response);
+                                if (i == toBeDeleted.length - 1) {
+                                    response.operation_successful = true;
+                                    res.send(response);
+                                }
                             }
                         });
                     }
                 });
             }
-            else {
-                res.send(null);
-            }
         })
     }
-
-
 });
 
 //Method will add list of incoming products;---------------------
 app.post('/api/add', (req, res) => {
     const productName = req.body.itemName;
     const productQuantity = req.body.itemQuantity;
-    console.log(req.body);
     let response = {
         "operation_successful": false,
         "error": null
@@ -118,27 +121,6 @@ app.post('/api/add', (req, res) => {
 });
 
 
-app.get('/api/getInventory', (req, res) => {
-    let response = {
-        "data": false,
-        "error": null
-    };
-
-
-    pool.query('SELECT NAME, QUANTITY FROM PRODUCTS', function (err, result) {
-        if (err) {
-            console.log(err);
-            response.error = err;
-            res.send(response);
-        }
-        else {
-            response.data = result;
-            res.send(response);
-        }
-    })
-
-
-});
 
 
 app.listen(port, () => {
