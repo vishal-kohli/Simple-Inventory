@@ -2,14 +2,27 @@ version: "3.8"
 
 services:
   # ---------------
+  nginx_server:
+    container_name: nginx_server
+    restart: always
+    depends_on:
+      - add_delete_server
+      - get_inventory_server
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:80"
+
+  #-----------------
   frontend_client:
     container_name: frontend_client
     stdin_open: true
     build:
       context: ./front-end
       dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     volumes:
       - /app/node_modules
       - ./front-end:/app
@@ -23,8 +36,6 @@ services:
     build:
       context: ./AddDeleteServer
       dockerfile: Dockerfile.dev
-    ports:
-      - "3001:3001"
     volumes:
       - /app/node_modules
       - ./AddDeleteServer:/app
@@ -38,8 +49,6 @@ services:
     build:
       context: ./AddDeleteServer
       dockerfile: Dockerfile.dev
-    ports:
-      - "3002:3002"
     volumes:
       - /app/node_modules
       - ./GetInventoryServer:/app

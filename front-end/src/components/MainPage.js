@@ -11,7 +11,8 @@ function MainPage() {
     const [items, setItems] = useState(null);
 
     const getData = () => {
-        fetch('http://localhost:3002/api/getInventory')
+        // fetch('http://localhost:3002/api/getInventory')
+        fetch('api/Get/getInventory')
             // fetch('get_inventory_server:3002')
             .then(response => {
                 return response.json()
@@ -37,7 +38,8 @@ function MainPage() {
     const addItemsToInventory = (data) => {
 
         data = JSON.stringify(data);
-        fetch('http://localhost:3001/api/add'
+        // fetch('http://localhost:3001/api/add'
+        fetch('api/addDelete/add'
             // fetch('add_delete_server'
             , {
                 method: 'post',
@@ -71,7 +73,8 @@ function MainPage() {
     const deleteItemsFromInventory = (data) => {
         // call api to get results
         data = JSON.stringify(data);
-        fetch('http://localhost:3001/api/delete', {
+        // fetch('http://localhost:3001/api/delete', {
+        fetch('api/addDelete/delete', {
             method: 'post',
             body: data,
             headers: {
