@@ -27,7 +27,7 @@ pool.on('connection', function (connection) {
 });
 
 //Method will get all existing products;---------------------
-app.get('/api/getInventory', (req, res) => {
+app.get('/getInventory', (req, res) => {
     let response = {
         "data": false,
         "error": null

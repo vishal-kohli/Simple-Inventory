@@ -31,7 +31,7 @@ pool.on('connection', function (connection) {
 });
 
 // Method will delete list of incoming product names;-----------------
-app.post('/api/delete', (req, res) => {
+app.post('/delete', (req, res) => {
     const toBeDeleted = req.body;
 
     let response = {
@@ -82,7 +82,7 @@ app.post('/api/delete', (req, res) => {
 });
 
 //Method will add list of incoming products;---------------------
-app.post('/api/add', (req, res) => {
+app.post('/add', (req, res) => {
     const productName = req.body.itemName;
     const productQuantity = req.body.itemQuantity;
     let response = {
@@ -125,4 +125,44 @@ app.post('/api/add', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Inventory is listening at http://localhost:${port}`);
+
+    // Load some start up data ------
+    const productName = "TestProduct";
+    const productQuantity = 100;
+    let response = {
+        "operation_successful": false,
+        "error": null
+    };
+
+
+    //insert into redis
+    redis_client.set(productName, productQuantity, function (err, reply) {
+        if (err) {
+            console.log(err);
+            response.error = err;
+            res.send(response);
+        }
+
+        // insert into mysql
+        else {
+            const data = {
+                name: productName,
+                quantity: productQuantity
+            };
+
+            pool.query('INSERT INTO products SET ?', data, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    response.error = err;
+                    // res.send(response);
+                }
+                else {
+                    response.operation_successful = true;
+                    // res.send(response);
+                }
+                console.log(response);
+            })
+        }
+    });
+
 });
