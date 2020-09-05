@@ -12,4 +12,4 @@ RUN npm install
 # copy rest of files
 COPY . .
 
-CMD ["npm", "run","dev"]
+CMD ["npm", "run","start"]

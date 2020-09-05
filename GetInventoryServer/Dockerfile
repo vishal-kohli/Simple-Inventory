@@ -1,6 +1,8 @@
 FROM node:alpine
 
 #setting work directory
+# RUN mkdir -p /app
+
 WORKDIR /app    
 
 #copying only package.json first, so cache can be used for minor changes
@@ -10,7 +12,4 @@ RUN npm install
 # copy rest of files
 COPY . .
 
-# RUN npm run build
-
-CMD ["npm","run", "start"]
-# CMD ["npm","run", "build"]
+CMD ["npm", "run","start"]

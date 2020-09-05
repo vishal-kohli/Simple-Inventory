@@ -4,26 +4,19 @@ services:
   nginx_server:
     container_name: nginx_server
     restart: always
-    # depends_on:
-    #   - add_delete_server
-    #   - get_inventory_server
     build:
       context: ./nginx
-      dockerfile: Dockerfile.dev
     ports:
       - "3000:80"
-
   #-----------------
   frontend_client:
     container_name: frontend_client
     stdin_open: true
     build:
       context: ./front-end
-      dockerfile: Dockerfile.dev
     # volumes:
     #   - /app/node_modules
     #   - ./front-end:/app
-
   # ---------------
   add_delete_server:
     container_name: add_delete_server
@@ -32,11 +25,6 @@ services:
       - mysql_db
     build:
       context: ./AddDeleteServer
-      dockerfile: Dockerfile.dev
-    # volumes:
-    #   - /app/node_modules
-    #   - ./AddDeleteServer:/app
-
   # #-----------------
   get_inventory_server:
     container_name: get_inventory_server
@@ -44,10 +32,6 @@ services:
       - mysql_db
     build:
       context: ./GetInventoryServer
-      dockerfile: Dockerfile.dev
-    # volumes:
-    #   - /app/node_modules
-    #   - ./GetInventoryServer:/app
   # ---------------
   redis_db:
     container_name: redis_db

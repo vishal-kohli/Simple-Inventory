@@ -47,11 +47,13 @@ function MainPage() {
             }).then(response => {
                 return response.json()
             }).then(res => {
-                // if (res.error.code != null && res.error.code.toString() === 'ER_DUP_ENTRY') {
-                //     setModalError("Item already exists");
-                // }
                 if (res.error != null) {
-                    setModalError("Something went wrong. Try again.");
+                    if (res.error.code === 'ER_DUP_ENTRY') {
+                        setModalError("Product already exists");
+                    }
+                    else {
+                        setModalError("Something went wrong. Try again.");
+                    }
                     getData();
                 }
                 else {
