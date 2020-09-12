@@ -17,7 +17,6 @@ const pool = mysql.createPool({
     user: 'root',
     password: 'password',
     host: 'mysql_db',
-    // host: 'localhost',
     port: '3306',
     database: 'inventory_db'
 });
@@ -135,7 +134,7 @@ app.listen(port, () => {
     };
 
 
-    //insert into redis
+    //insert into redis a test product
     redis_client.set(productName, productQuantity, function (err, reply) {
         if (err) {
             console.log(err);
